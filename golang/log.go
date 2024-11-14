@@ -80,7 +80,11 @@ func getEncoder() zapcore.Encoder {
 }
 
 func getLogWriter() zapcore.WriteSyncer {
-	clientLogRoot := utils.GetenvWithDef(CLIENT_LOG_ROOT, os.Getenv("user.home")+"/logs/rocketmqlogs")
+	logPath := os.Getenv("user.home")
+	if logPath == "" {
+		logPath = "./logs"
+	}
+	clientLogRoot := utils.GetenvWithDef(CLIENT_LOG_ROOT, logPath+"/rocketmqlogs")
 	clientLogMaxIndex := utils.GetenvWithDef(CLIENT_LOG_MAXINDEX, "10")
 	clientLogFileName := utils.GetenvWithDef(CLIENT_LOG_FILENAME, "rocketmq_client_go.log")
 	clientLogMaxFileSize := utils.GetenvWithDef(CLIENT_LOG_FILESIZE, "1073741824")
@@ -105,6 +109,6 @@ func getLogWriter() zapcore.WriteSyncer {
 	return zapcore.AddSync(lumberJackLogger)
 }
 
-func init() {
+func Init() {
 	InitLogger()
 }
